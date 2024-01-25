@@ -13,10 +13,10 @@ export const Inicio = () => {
       <div className="imgbox">
       </div>      
       <br></br>
-        <Stack direction="column" height={220} spacing={2} style={{backgroundColor:'ButtonShadow'}}>
+        <Stack className='btn btn-warning' direction="column" height={180} spacing={2} style={{backgroundColor:'ButtonShadow'}}>
           <h3 className='text-center'> Unidades de Negocio </h3>
         <Stack direction='row' spacing={2}>
-              <a href='/Clientes'><button className="button-10" role="button">
+              <a href='/clientes'><button className="button-10" role="button">
               <span className="text"> Importaciones </span>
             </button></a>
 

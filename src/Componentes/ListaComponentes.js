@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Clienteservice from '../service/ClientesService';
 import { Link , useNavigate } from 'react-router-dom';
+import Stack from '@mui/material/Stack';
 
 export const ListaComponentes = () => {
   
@@ -28,7 +29,8 @@ export const ListaComponentes = () => {
     <div style={{margin:5 , zoom: '90%'}}>
       <h2 className='text-center'> Recordatorios </h2>
       <Link to="/add-Clientes" className='btn btn-primary mb-2'>Agregar Recordatorio</Link>
-      <table style={{whiteSpace:'nowrap'}} className='table table-bordered table-striped'>
+      <table  className='table table-bordered table-striped'>
+      <thead >  
         <th>ID</th>
         <th>Direccion</th>
         <th>Director</th>
@@ -43,7 +45,7 @@ export const ListaComponentes = () => {
         <th>Estatus</th>
         <th>Comentarios</th>
         <th>Acciones</th>
-        
+        </thead> 
       <tbody>
         {
           Clientes.map(
@@ -63,8 +65,10 @@ export const ListaComponentes = () => {
                 <td>{Clientes.estatus}</td>
                 <td>{Clientes.comentarios}</td>
                 <td>
-                  <Link className='btn btn-info' to={`/edit-Clientes/${Clientes.id}`}>Actualizar</Link>
+                  <Stack direction='row' spacing={1}>
+                  <Link className='btn btn-success' to={`/edit-Clientes/${Clientes.id}`}>Actualizar</Link>
                   <button style={{marginLeft:"10px" }} className='btn btn-danger' onClick={() => deleteClientes(Clientes.id) }>Eliminar</button>
+                  </Stack>
                 </td>
               </tr>
           )

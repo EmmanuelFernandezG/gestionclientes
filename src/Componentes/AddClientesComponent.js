@@ -26,7 +26,7 @@ export const AddClientesComponent = () => {
         if(id){
             Clienteservice.updateClientes(id,Clientes).then((response) =>{
                 console.log(response.data);
-                navigate('/Clientes');
+                navigate('/clientes');
             }).catch(error => {
                 console.log(error)
             })
@@ -34,7 +34,7 @@ export const AddClientesComponent = () => {
         else{
             Clienteservice.createClientes(Clientes).then((response) =>{
                 console.log(response.data);
-                navigate('/Clientes');
+                navigate('/clientes');
             }).catch(error => {
                 console.log(error)
             })
