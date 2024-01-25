@@ -18,6 +18,7 @@ export const ListaComponentes = () => {
       })
 
     }
+
     const deleteClientes = (ClientesId) => {
       Clienteservice.deleteClientes(ClientesId).then((response)=>{
         listarClientes();
@@ -31,7 +32,6 @@ export const ListaComponentes = () => {
       <Link to="/add-Clientes" className='btn btn-primary mb-2'>Agregar Recordatorio</Link>
       <table  className='table table-bordered table-striped'>
       <thead >  
-        <th>ID</th>
         <th>Direccion</th>
         <th>Director</th>
         <th>Tipo</th>
@@ -39,9 +39,9 @@ export const ListaComponentes = () => {
         <th>Recordatorio</th>
         <th>Frecuencia de envío</th>
         <th>Titular</th>
-        <th>Frecuencia</th>
         <th>Dia</th>
         <th>Fecha Programada</th>
+        <th>Frecuencia</th>
         <th>Estatus</th>
         <th>Comentarios</th>
         <th>Acciones</th>
@@ -50,8 +50,7 @@ export const ListaComponentes = () => {
         {
           Clientes.map(
               Clientes =>
-              <tr key={Clientes.id}>
-                <td>{Clientes.id}</td>
+              <tr key={Clientes.id +1}>
                 <td>{Clientes.direccion}</td>
                 <td>{Clientes.director}</td>
                 <td>{Clientes.tipo}</td>
@@ -59,9 +58,9 @@ export const ListaComponentes = () => {
                 <td>{Clientes.textorecordatorio}</td>
                 <td>{Clientes.frecuenciatipo}</td>
                 <td>{Clientes.titular}</td>
-                <td>{Clientes.frecuencia}</td>
                 <td>{Clientes.diaenvio}</td>
                 <td>{Clientes.fechaprogramada}</td>
+                <td>{Clientes.frecuencia}</td>
                 <td>{Clientes.estatus}</td>
                 <td>{Clientes.comentarios}</td>
                 <td>

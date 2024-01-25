@@ -9,6 +9,7 @@ export const AddClientesComponent = () => {
     const [director , setdirector] = useState('');
     const [tipo , settipo] = useState('');
     const [folio , setfolio] = useState('');
+    const [folionew , setfolionew] = useState('');
     const [frecuenciatipo , setfrecuenciatipo] = useState('');
     const [titular , settitular] = useState('');
     const [frecuencia , setfrecuencia] = useState('');
@@ -17,12 +18,27 @@ export const AddClientesComponent = () => {
     const [estatus , setestatus] = useState('');
     const [comentarios , setcomentarios] = useState('');
     const [textorecordatorio , settextorecordatorio] = useState('');
+    const [Clientes , setClientes]= useState([]);
     const navigate = useNavigate();
     const {id} =useParams();
-    
+
+
+    function myfunction(e){
+
+        if (folionew - folionew === 0){
+            
+            const numero = folionew.toString().padStart(3,'0');
+            settipo(e)    
+            setfolio(direccion.substring(0,3) + '-' + numero + '-' + e.substring(0,3));
+
+        }else{
+            console.log("numero ")
+
+        }
+    }
     const saveOrUpdateClientes = (e) => {
         e.preventDefault();
-        const Clientes = {direccion,director, tipo, folio, textorecordatorio, frecuenciatipo, titular , frecuencia, diaenvio, fechaprogramada, estatus, comentarios};
+        const Clientes = {direccion,director, tipo, folio , textorecordatorio, frecuenciatipo, titular , frecuencia, diaenvio, fechaprogramada, estatus, comentarios};
         if(id){
             Clienteservice.updateClientes(id,Clientes).then((response) =>{
                 console.log(response.data);
@@ -32,8 +48,9 @@ export const AddClientesComponent = () => {
             })
         }
         else{
+
             Clienteservice.createClientes(Clientes).then((response) =>{
-                console.log(response.data);
+                console.log( response.data);
                 navigate('/clientes');
             }).catch(error => {
                 console.log(error)
@@ -43,6 +60,9 @@ export const AddClientesComponent = () => {
     }
 
     useEffect(()=>{
+        setClientes();
+
+        if(id){
         Clienteservice.getClientesById(id).then((response)=>{
             setdireccion(response.data.direccion);
             setdirector(response.data.director);
@@ -56,11 +76,20 @@ export const AddClientesComponent = () => {
             setfechaprogramada(response.data.fechaprogramada);
             setestatus(response.data.estatus);
             setcomentarios(response.data.comentarios);
-
         }).catch(error=>{
             console.log(error)
         })
+    }else{
+        Clienteservice.getAllClientes().then(response =>{
+            setfolionew(response.data.length + 1  );
+            
+          }).catch(error => {
+            console.log(error);
+          })
+    
+    }
     },[])
+
     const title =()=>{
         if(id){
             return (
@@ -71,6 +100,7 @@ export const AddClientesComponent = () => {
                 )
             }
         else{
+
             return (
             <Stack direction='row'>
                <Link onClick={() => navigate(-1)}  className='btn btn-secondary mb-2'> Atras </Link>
@@ -99,6 +129,7 @@ export const AddClientesComponent = () => {
                 value={direccion} 
                 onChange={(e) => setdireccion(e.target.value)}
                  >
+                   <option> Seleccionar... </option> 
                    <option> Importaciones </option> 
                    <option> Exportaciones </option> 
                    <option> Planta </option> 
@@ -114,6 +145,7 @@ export const AddClientesComponent = () => {
                 value={director} 
                 onChange={(e) => setdirector(e.target.value)}
                 >
+                <option> Seleccionar... </option> 
                 <option> Fernando Pelusi de Icaza </option> 
                 <option> Gil Morley </option> 
                 <option> Sergio Isunza </option> 
@@ -122,13 +154,14 @@ export const AddClientesComponent = () => {
         <div className='form-group -mb-2'>
                 <label className='form-label'>Tipo</label>
                 <select 
+                onChange={(e)=> myfunction(e.target.value)}
                 type='text' 
                 placeholder='Digite Tipo' 
                 name='tipo' 
                 className='form-control' 
                 value={tipo} 
-                onChange={(e) => settipo(e.target.value)}
                 >
+                <option> Seleccionar... </option> 
                 <option> DG </option> 
                 <option> INTERNO </option> 
               </select>
