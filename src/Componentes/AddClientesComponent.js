@@ -24,7 +24,7 @@ export const AddClientesComponent = () => {
 
 
     function myfunction(e){
-
+        console.log(e)
         if (folionew - folionew === 0){
             
             const numero = folionew.toString().padStart(3,'0');
@@ -80,9 +80,10 @@ export const AddClientesComponent = () => {
             console.log(error)
         })
     }else{
-        Clienteservice.getAllClientes().then(response =>{
-            setfolionew(response.data.length + 1  );
-            
+        Clienteservice.getAllClientes(id).then(response =>{
+            const rango = response.data.length - 1;
+            setfolionew(response.data[rango].id +1  );
+            console.log(folionew)
           }).catch(error => {
             console.log(error);
           })

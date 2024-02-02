@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const Clientes_BASE_REST_API = "http://localhost:8080/api/v1/clientes";
+const Usuario_BASE_REST_API = "http://localhost:8080/api/v1/usuario";
 
 class Clienteservice{
 
@@ -20,5 +21,18 @@ class Clienteservice{
     deleteClientes(ClientesId){
         return axios.delete(Clientes_BASE_REST_API + '/' + ClientesId)
     }
+
+    getAllUsuario(){
+        return axios.get(Usuario_BASE_REST_API);
+    }
+    createUsuario(Usuario){
+        console.log(Usuario)
+        return axios.post(Usuario_BASE_REST_API,Usuario);
+    }    
+    getUsuarioById(UsuarioId){
+        return axios.get(Usuario_BASE_REST_API + '/' + UsuarioId);
+    }
 }
+
+
 export default new Clienteservice;
