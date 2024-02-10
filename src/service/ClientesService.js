@@ -1,7 +1,9 @@
 import axios from "axios";
 
-const Clientes_BASE_REST_API = "http://localhost:8080/api/v1/clientes";
-const Usuario_BASE_REST_API = "http://localhost:8080/api/v1/usuario";
+// // const Clientes_BASE_REST_API =  "http://172.18.34.219:8080/recordatorios/api/v1/clientes";
+const Clientes_BASE_REST_API = "http://localhost:8080/recordatorios/api/v1/clientes";
+// //  const Usuario_BASE_REST_API = "http://172.18.34.219:8080/recordatorios/api/v1/usuario";    
+const Usuario_BASE_REST_API =   "http://localhost:8080/recordatorios/api/v1/usuario";
 
 class Clienteservice{
 

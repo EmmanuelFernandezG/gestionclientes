@@ -18,7 +18,6 @@ function App() {
   const[error,setError] =useState("");
 
 const Login = async usuarioinfo =>{
-console.log(usuarioinfo)
 
     if ( usuarioinfo.perfil == "admin" ||  usuarioinfo.perfil == "usuario" ) {
       setUser({
@@ -43,7 +42,14 @@ if(almacenlocalusuario == null){
 
   return (
     <div>
-  <LoginForm Login={Login} error={error} />  
+         <BrowserRouter>
+      <div className='container'>
+      <Routes>
+        <Route  path='record/' element={<LoginForm Login={Login} error={error} />}></Route>    
+      </Routes>
+      </div>
+      </BrowserRouter>
+   
   </div>
 )
 }else{
@@ -54,7 +60,7 @@ if(almacenlocalusuario == null){
       <HeaderComponent/>
       <div className='container'>
       <Routes>
-        <Route  path='/usuario' element={<AgregarUsuario/>}></Route>    
+        <Route  path='record/usuario' element={<AgregarUsuario/>}></Route>    
       </Routes>
       </div>
       </BrowserRouter>
@@ -67,11 +73,11 @@ if(almacenlocalusuario == null){
   <HeaderComponent/>
   <div className='container'>
   <Routes>
-    <Route exact path='/' element={<Inicio/>}></Route>
-    <Route  path='/clientes' element={<ListaComponentes/>}></Route>
-    <Route  path='/add-Clientes' element={<AddClientesComponent/>}></Route>
-    <Route  path='/edit-Clientes/:id' element={<AddClientesComponent/>}></Route>
-    <Route  path='/usuario' element={<AgregarUsuario/>}></Route>
+    <Route exact path='record/' element={<Inicio/>}></Route>
+    <Route  path='record/clientes' element={<ListaComponentes/>}></Route>
+    <Route  path='record/add-Clientes' element={<AddClientesComponent/>}></Route>
+    <Route  path='record/edit-Clientes/:id' element={<AddClientesComponent/>}></Route>
+    <Route  path='record/usuario' element={<AgregarUsuario/>}></Route>
   </Routes>
   </div>
   </BrowserRouter>

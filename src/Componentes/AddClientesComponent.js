@@ -9,7 +9,7 @@ export const AddClientesComponent = () => {
     const [director , setdirector] = useState('');
     const [tipo , settipo] = useState('');
     const [folio , setfolio] = useState('');
-    const [folionew , setfolionew] = useState('');
+    const [folionew , setfolionew] = useState();
     const [frecuenciatipo , setfrecuenciatipo] = useState('');
     const [titular , settitular] = useState('');
     const [frecuencia , setfrecuencia] = useState('');
@@ -21,18 +21,20 @@ export const AddClientesComponent = () => {
     const [Clientes , setClientes]= useState([]);
     const navigate = useNavigate();
     const {id} =useParams();
-
+    let e = 0;
 
     function myfunction(e){
-        console.log(e)
+
         if (folionew - folionew === 0){
             
             const numero = folionew.toString().padStart(3,'0');
+            console.log(numero)
             settipo(e)    
             setfolio(direccion.substring(0,3) + '-' + numero + '-' + e.substring(0,3));
 
         }else{
-            console.log("numero ")
+            setfolio(direccion.substring(0,3) + '-' + "001" + '-' + e.substring(0,3));
+            settipo(e)    
 
         }
     }
@@ -42,8 +44,8 @@ export const AddClientesComponent = () => {
         if(id){
             Clienteservice.updateClientes(id,Clientes).then((response) =>{
                 console.log(response.data);
-                navigate('/clientes');
-            }).catch(error => {
+                navigate(-1)}
+                ).catch(error => {
                 console.log(error)
             })
         }
@@ -51,8 +53,8 @@ export const AddClientesComponent = () => {
 
             Clienteservice.createClientes(Clientes).then((response) =>{
                 console.log( response.data);
-                navigate('/clientes');
-            }).catch(error => {
+                navigate(-1)}
+                ).catch(error => {
                 console.log(error)
             })
     
@@ -61,7 +63,6 @@ export const AddClientesComponent = () => {
 
     useEffect(()=>{
         setClientes();
-
         if(id){
         Clienteservice.getClientesById(id).then((response)=>{
             setdireccion(response.data.direccion);
@@ -82,7 +83,7 @@ export const AddClientesComponent = () => {
     }else{
         Clienteservice.getAllClientes(id).then(response =>{
             const rango = response.data.length - 1;
-            setfolionew(response.data[rango].id +1  );
+            setfolionew(response.data[rango].id + 1  );
             console.log(folionew)
           }).catch(error => {
             console.log(error);
@@ -304,10 +305,17 @@ export const AddClientesComponent = () => {
                 onChange={(e) => setcomentarios(e.target.value)}
                  />
         </div>
-            <button className='btn btn-success' onClick={ (e) => saveOrUpdateClientes(e) } >Guardar</ button>
+        <br></br>
+            {folio == "" || fechaprogramada == "" ?
+            <button disabled  className='btn btn-success' onClick={ (e) => saveOrUpdateClientes(e) } >Guardar</ button>
+            :
+            <button  className='btn btn-success' onClick={ (e) => saveOrUpdateClientes(e) } >Guardar</ button>
+    
+        }
             &nbsp;&nbsp;
-            <Link to='/Clientes' className='btn btn-danger'>Cancelar</Link>
+            <Link  onClick={() => navigate(-1)} className='btn btn-danger'>Cancelar</Link>
         </form>
+        <br></br>
         </div>
         </div>    
         </div>        

@@ -1,6 +1,6 @@
 import React, {useState, useNavigate, useEffect} from 'react';
 import Clienteservice from '../service/ClientesService';
-import { Button } from 'bootstrap';
+import { Link } from 'react-router-dom';
 
 function LoginForm({Login, error}) {
     const [details, setDetails] = useState({username:"",password:""});
@@ -25,7 +25,6 @@ function LoginForm({Login, error}) {
       }
     const NuevoUser  = (e) =>{
         usuarioinfo.usuario ="NuevoUser"    
-    console.log(usuarioinfo.usuario)
     Login(usuarioinfo.usuario)
     }
     const handleKeyPress = (event) => {
@@ -34,7 +33,7 @@ function LoginForm({Login, error}) {
       }
     }
   return (
-    <div style={{margin:40,height:185,width:300,backgroundColor:'gray' ,backgroundRepeat:'repeat-x',backgroundImage: "url('/truperimagen.jpg')"}}>
+    <div style={{margin:40,height:185,width:300,backgroundColor:'gray' ,backgroundRepeat:'repeat-x',backgroundImage: "url('/record/truperimagen.jpg')"}}>
       
         <div className='form-inner'>
               <h2> Login</h2>
@@ -50,7 +49,7 @@ function LoginForm({Login, error}) {
             <input type='Submit' value="LOGIN" onClick={e => listarUsuarios()}></input>
             &nbsp;&nbsp;
             &nbsp;&nbsp;
-            <a href='/usuario'><input type='Submit' value="Nuevo Usuario" onClick={e => NuevoUser()}></input></a>
+            <Link to='usuario'><input type='Submit' value="Nuevo Usuario" onClick={e => NuevoUser()}></input></Link>
         </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import Clienteservice from '../service/ClientesService';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function AgregarUsuario() {
     const [details, setDetails] = useState({email:"",usuario:"",constrasena:"", perfil:"",password:""});
@@ -8,6 +8,8 @@ function AgregarUsuario() {
     
     const limpiarstorage = () => {
         localStorage.clear();
+        navigate('/record/');
+        window.location.reload(false);
       }
 
       const listarUsuarios =(e)=>{
@@ -15,7 +17,7 @@ function AgregarUsuario() {
             const max = response.data.length
             var validacion = (false)
            for (let i = 0; i < max; i++) {
-            console.log(response.data[i])
+
             if (response.data[i].email === details.email ) {
                 alert("usuario " + details.email  +  " Ya Existe")
                 var validacion = (true)
@@ -36,9 +38,8 @@ function AgregarUsuario() {
 
 const AceptarNuevoOK = ()=>{
     Clienteservice.createUsuario(details).then(response =>{
-        console.log(response.data);
         localStorage.clear();
-        navigate('/');
+        navigate('/record/');
         window.location.reload(false);
     }).catch(error => {
       console.log(error);
@@ -84,7 +85,7 @@ const AceptarNuevoOK = ()=>{
             <input  disabled type='Submit' value="Aceptar "></input>
              }
             <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-            <a href='/'><input type='Submit' value="Cancelar " onClick={limpiarstorage}></input></a>
+            <Link><input type='Submit' value="Cancelar " onClick={limpiarstorage}></input></Link>
             &nbsp;&nbsp;
             &nbsp;&nbsp;
         </div>
