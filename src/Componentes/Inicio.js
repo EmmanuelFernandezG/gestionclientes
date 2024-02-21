@@ -26,7 +26,7 @@ export const Inicio = () => {
       <br></br>
       <Link to="/record/add-Clientes" className='btn btn-primary mb-2'>Agregar Recordatorio</Link>
         <Stack className='btn btn-warning' direction="column" height={180} spacing={2} style={{backgroundColor:'ButtonShadow'}}>
-          <h3 className='text-center'> Unidades de Negocio </h3>
+          <h3 className='text-center'> Dirección </h3>
         <Stack direction='row' spacing={2}>
 
             <button  className="button-10" onClick={e => {direc(e)}} value ="Importaciones" role="button">

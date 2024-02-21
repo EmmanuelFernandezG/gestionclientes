@@ -4,29 +4,81 @@ import { Link , useLocation, useNavigate } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
 
 export const ListaComponentes = () => {
+  const [director , setDirector]= useState([]);
+  const [titular , setTitular]= useState([]);
   const [Clientes , setClientes]= useState([]);
   const location = useLocation();
   const [nwarr , setnwarr]=useState([]); 
   const navigate = useNavigate();
-
-  useEffect(() =>{
+    useEffect(() =>{
     listarClientes();
     },[])
-    const listarClientes =()=>{
-      Clienteservice.getAllClientes().then(response =>{
+    const listarClientes =(a)=>{
+      
+      if(typeof a === 'undefined' ){
+        Clienteservice.getAllClientes().then(response =>{
 
-        let i = 0;
-        for(i=0;i<response.data.length ;i++){
-          if(response.data[i].direccion == location.state.e){
-          nwarr.push(response.data[i])
-          setClientes(nwarr)
-        }}
-      }
-      ).catch(error => {
-        console.log(error);
-      })
+          let i = 0;
+          for(i=0;i<response.data.length ;i++){
+            if(response.data[i].direccion == location.state.e  ){
+              const exist = director.includes(response.data[i].director)
+              if (exist == false){
+                director.push(response.data[i].director)              
+              }
+              const existtitul = titular.includes(response.data[i].titular)
+              if (existtitul == false){
+                titular.push(response.data[i].titular)              
+              }
+              nwarr.push(response.data[i])
+            setClientes(nwarr)
+          }}
+        }
+        ).catch(error => {
+          console.log(error);
+        })        
+      }else{
+        if (typeof a != 'undefined' ){
+        const nwarr = new Array();
+        const titular = new Array();
+        Clienteservice.getAllClientes().then(response =>{
 
-    }
+          let i = 0;
+          for(i=0;i<response.data.length ;i++){
+
+            if(response.data[i].direccion == location.state.e && response.data[i].director == a.target.value  && a.target.id == "director" ){
+              const director = new Array();
+              setClientes(director)
+              const exist = director.includes(response.data[i].director)
+              if (exist == false){
+                director.push(response.data[i].director)              
+              }
+              const existtitul = titular.includes(response.data[i].titular)
+              if (existtitul == false){
+                titular.push(response.data[i].titular)              
+              }
+              nwarr.push(response.data[i])
+            setClientes(nwarr)
+            setTitular(titular)
+          }
+          if(response.data[i].direccion == location.state.e && response.data[i].titular == a.target.value  && a.target.id == "titular" && response.data[i].director == Clientes[0].director ){
+            const existtitul = titular.includes(response.data[i].titular)
+
+                    if (existtitul == false){
+                      titular.push(response.data[i].titular)              
+                    }
+                    nwarr.push(response.data[i])
+                    setClientes(nwarr)
+        
+        }
+        }
+        }
+        ).catch(error => {
+          console.log(error);
+        })        
+    }  
+  }
+}
+
 
     const deleteClientes = (ClientesId) => {
       Clienteservice.deleteClientes(ClientesId).then((response)=>{
@@ -46,19 +98,47 @@ export const ListaComponentes = () => {
 
       }
 
-      console.log("Llega")
-
-
     return (
     <div style={{margin:-70 , zoom: '90%'}}>
       <br></br>
       <br></br>
       <br></br>
       <h2 className='text-center'> Recordatorios {location.state.e} </h2>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <br></br>
+ <Stack direction='row'>
+  <Stack direction={'column'} style={{backgroundColor:"#FCE8C8" , maxWidth:'25%'}}>     
+      <h4><strong>Filtro Por Director</strong></h4>
+<Stack  direction="row" spacing={5} >
+{
+  director.map(
+    director =>
+    <Stack maxWidth={"70%"}>
+      <label for={director}>{director}</label>
+      <input  style={{height:20}}  onClick={(a)=> listarClientes(a) } type="radio" id="director" name="director" value={director}></input>
+    </Stack> 
+        )}
+</Stack>
+</Stack>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<Stack direction={'column'} style={{backgroundColor:"#FCE8C8" , maxWidth:'25%'}}>    
+ 
+      <h4><strong>Filtro Por Titular</strong></h4>
+<Stack  direction="row" spacing={5} >
+{
+  titular.map(
+    titular =>
+    <Stack>
+      <label for={titular}>{titular}</label>
+      <input style={{height:20}} onClick={(a)=> listarClientes(a) } type="radio" id="titular" name="titular" value={titular}></input>
+    </Stack> 
+        )}
+</Stack>
+</Stack>
+
+</Stack>
+<br></br>
       <table  id='myTable'  className='table table-bordered table-striped'>
-      <thead   >  
+      <thead  style={{backgroundColor:'#EE914F', color:'white', textAlign:'center'}} >  
         <th>Direccion</th>
         <th>Director</th>
         <th>Tipo</th>
@@ -88,7 +168,8 @@ export const ListaComponentes = () => {
                  <td>{Clientes.diaenvio}</td>
                  <td>{Clientes.fechaprogramada}</td>
                  <td>{Clientes.frecuencia}</td>
-                 <td>{Clientes.estatus}</td>
+                 <td></td>
+                 {/* <td>{Clientes.estatus}</td> */}
                  <td>{Clientes.comentarios}</td>
                  <td>
                    <Stack direction='row' spacing={1}>
