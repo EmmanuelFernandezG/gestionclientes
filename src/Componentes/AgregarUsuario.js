@@ -25,16 +25,14 @@ function AgregarUsuario() {
                 {break;}
             }            
         }
-        if(validacion==false){
+        if(validacion===false){
             AceptarNuevoOK();
         }
 
     }).catch(error => {
           console.log(error);
         })
-  
-      }
-
+        }
 
 const AceptarNuevoOK = ()=>{
     Clienteservice.createUsuario(details).then(response =>{
@@ -73,13 +71,14 @@ const AceptarNuevoOK = ()=>{
             <div className='form-group'>
                 <label htmlFor='perfil'> Perfil: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </label>
                 <select type='text' name='perfil' id='perfil' onChange={e => setDetails({...details, perfil: e.target.value})} value={details.perfil} >
-                <option>Seleccionar...</option>
-                <option>usuario</option>
+                <option defaultValue="usuario">Seleccionar...</option>
+                <option value="usuarioinicial">Usuario Inicial</option>
+                <option value="usuarioseguimiento">Usuario Seguimiento</option>
                 <option disabled>admin</option>
                     </select>
             </div>
             <br></br>
-            {details.usuario !="" &&  details.constrasena != "" && details.password != "" && details.password == details.constrasena ?            
+            {details.usuario !== "" &&  details.constrasena !== "" && details.password !== "" && details.password === details.constrasena ?            
             <input  type='Submit' value="Aceptar " onClick={listarUsuarios}></input>
             :
             <input  disabled type='Submit' value="Aceptar "></input>

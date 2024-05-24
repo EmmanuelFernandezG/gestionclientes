@@ -4,8 +4,6 @@ import { Link , useNavigate } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
 import ListaComponentes from './ListaComponentes';
 
-
-
 export const Inicio = () => {
 
   const navigate = useNavigate();
@@ -15,7 +13,7 @@ export const Inicio = () => {
         navigate('/record/clientes' , {state:{e: e.target.value}});
 
   } 
- 
+  const perfillocalusuario = localStorage.getItem('perfil')
   return (
 
           <div className='container' >
@@ -24,8 +22,12 @@ export const Inicio = () => {
       <div className="imgbox">
       </div>      
       <br></br>
-      <Link to="/record/add-Clientes" className='btn btn-primary mb-2'>Agregar Recordatorio</Link>
-        <Stack className='btn btn-warning' direction="column" height={180} spacing={2} style={{backgroundColor:'ButtonShadow'}}>
+      {perfillocalusuario === "admin" ? 
+      <Link to="/record/add-Clientes" className='btn btn-secondary mb-1'>Agregar Recordatorio</Link>
+      :
+      <h5></h5>        
+    }
+       <Stack className='btn btn-warning' direction="column" height={180} spacing={2} style={{backgroundColor:'ButtonShadow'}}>
           <h3 className='text-center'> Dirección </h3>
         <Stack direction='row' spacing={2}>
 
@@ -39,8 +41,6 @@ export const Inicio = () => {
             <button  className="button-10" onClick={e => {direc(e)}} value ="Planta" role="button">
               Planta
             </button>
-
-
           </Stack>
         </Stack>
         <div className="imgbox"></div>

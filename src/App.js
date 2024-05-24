@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import  ListaComponentes from './Componentes/ListaComponentes'
 import HeaderComponent from './Componentes/HeaderComponent'
@@ -10,7 +9,7 @@ import LoginForm from './Componentes/LoginForm';
 import AgregarUsuario from './Componentes/AgregarUsuario';
 
 function App() {
-
+  
   const almacenlocalusuario = localStorage.getItem('username')
   const almacenlocalpassword = localStorage.getItem('password')
 
@@ -19,15 +18,17 @@ function App() {
 
 const Login = async usuarioinfo =>{
 
-    if ( usuarioinfo.perfil == "admin" ||  usuarioinfo.perfil == "usuario" ) {
+    if ( usuarioinfo.perfil === "admin" ||  usuarioinfo.perfil === "usuarioinicial"  ||  usuarioinfo.perfil === "usuarioseguimiento" ) {
       setUser({
         username:usuarioinfo.usuario,
         password:usuarioinfo.constrasena})
         localStorage.setItem('username', usuarioinfo.usuario)
+        localStorage.setItem('perfil', usuarioinfo.perfil)
+        
         // localStorage.setItem('password', usuarioinfo.constrasena)
     }
     else{
-      if(usuarioinfo == "NuevoUser") {
+      if(usuarioinfo === "NuevoUser") {
         setUser({
           username:usuarioinfo.usuario,
           password:usuarioinfo.constrasena})
@@ -38,9 +39,9 @@ const Login = async usuarioinfo =>{
     }
   }
   }
-if(almacenlocalusuario == null){
-
+if(almacenlocalusuario === null){
   return (
+    
     <div>
          <BrowserRouter>
       <div className='container'>
@@ -53,11 +54,12 @@ if(almacenlocalusuario == null){
   </div>
 )
 }else{
-  if(almacenlocalusuario =="NuevoUser"){
+  if(almacenlocalusuario ==="NuevoUser"){
+
     return(
       <div>
       <BrowserRouter>
-      <HeaderComponent/>
+      <HeaderComponent />
       <div className='container'>
       <Routes>
         <Route  path='record/usuario' element={<AgregarUsuario/>}></Route>    
@@ -67,6 +69,7 @@ if(almacenlocalusuario == null){
     </div>
     )    
   }else{
+
   return(
   <div>
   <BrowserRouter>
@@ -78,14 +81,11 @@ if(almacenlocalusuario == null){
     <Route  path='record/add-Clientes' element={<AddClientesComponent/>}></Route>
     <Route  path='record/edit-Clientes/:id' element={<AddClientesComponent/>}></Route>
     <Route  path='record/usuario' element={<AgregarUsuario/>}></Route>
+
   </Routes>
   </div>
   </BrowserRouter>
 </div>
-)
-}
-}
-;
-}
+)}};}
 
 export default App;

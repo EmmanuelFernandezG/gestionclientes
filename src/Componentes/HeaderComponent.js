@@ -7,7 +7,7 @@ export const HeaderComponent = () => {
 
   const limpiarstorage = () => {
     localStorage.clear();
-    navigate('/record/');
+    navigate('record/');
     window.location.reload(false);
   }
   
@@ -16,15 +16,15 @@ export const HeaderComponent = () => {
   const almacenlocalusuario = localStorage.getItem('username')
   const almacenlocalpassword = localStorage.getItem('password')
 
-if (almacenlocalusuario == "NuevoUser"){
+if (almacenlocalusuario === "NuevoUser"){
   return(
-    <div>
-        <header>
+    <div style={{position:"sticky", top:0}}>
+        <header >
             <nav  className='navbar navbar-expand-mb navbar-dark- bg-dark'>
                 <div>
-                  <h1></h1>
+                  <h1> </h1>
                 </div>
-                <Link to='/record/'><button className='btn btn-danger'  onClick={limpiarstorage}> Log Out </button></Link>
+                <Link to='record'><button className='btn btn-danger'  onClick={limpiarstorage}> Log Out </button></Link>
 
             </nav>
         </header>
@@ -33,14 +33,15 @@ if (almacenlocalusuario == "NuevoUser"){
   )
 }
   return (
-    <div>
-        <header>
-            <nav  className='navbar navbar-expand-mb navbar-dark- bg-dark'>
+    <div style={{position:"sticky", top:0}}>
+        <header >
+            <nav  style={{border: "1px solid black"}}  className='navbar navbar-expand-mb navbar-light- bg-light'>
                 <div>
-                  <h1></h1>
-                    <Link  to="record" className='navbar-brand'> Inicio </Link>
+                  <h1> </h1>
+                    <Link  to="record" style={{color:"#FF6720" }} className='navbar-brand'>&nbsp; <strong>Inicio</strong> </Link>
+                    
                 </div>
-                <Link to='/record/'><button className='btn btn-danger'  onClick={limpiarstorage}> Log Out </button></Link>
+                <Link to='record'><button className='btn btn-danger'  onClick={limpiarstorage}> Log Out </button></Link>
 
             </nav>
         </header>
