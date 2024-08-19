@@ -9,7 +9,6 @@ export const Inicio = () => {
   const navigate = useNavigate();
 
   const direc = (e) =>{
-    // console.log(e.target.value)
         navigate('/record/clientes' , {state:{e: e.target.value}});
 
   } 

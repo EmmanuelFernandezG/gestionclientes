@@ -17,6 +17,7 @@ export const AddClientesComponent = () => {
     const [fechaprogramada , setfechaprogramada] = useState('');
     const [estatus , setestatus] = useState('');
     const [comentarios , setcomentarios] = useState('');
+    const [fechainicial , setfechainicial] = useState(new Date().toISOString().slice(0, 10));
     const [respuesta , setrespuesta] = useState('false');
     const [textorecordatorio , settextorecordatorio] = useState('');
     const [Clientes , setClientes]= useState([]);
@@ -36,13 +37,14 @@ export const AddClientesComponent = () => {
     }
     const saveOrUpdateClientes = (e) => {
         e.preventDefault();
-        const Clientes = {direccion,director, tipo, folio , textorecordatorio, frecuenciatipo, titular , frecuencia, diaenvio, fechaprogramada, estatus, comentarios, respuesta};
+        const Clientes = {id, direccion,director, tipo, folio , textorecordatorio, frecuenciatipo, titular , frecuencia, diaenvio, fechaprogramada, estatus, comentarios, respuesta, fechainicial};
         if(id){
-            Clienteservice.updateClientes(id,Clientes).then((response) =>{
-                navigate(-1)}
-                ).catch(error => {
-                console.log(error)
-            })
+
+             Clienteservice.updateClientes(id,Clientes).then((response) =>{
+                 navigate(-1)}
+                 ).catch(error => {
+                 console.log(error)
+             })
         }
         else{
             Clienteservice.createClientes(Clientes).then((response) =>{
@@ -69,15 +71,14 @@ export const AddClientesComponent = () => {
             setestatus(response.data.estatus);
             setcomentarios(response.data.comentarios);
             setrespuesta(response.data.respuesta)
-            console.log(response)
         }).catch(error=>{
             console.log(error)
         })
     }else{
         Clienteservice.getAllClientes(id).then(response =>{
             const rango = response.data.length - 1;
+            setfechainicial (fechainicial)
             setfolionew(response.data[rango].id + 1  );
-            console.log(folionew)
           }).catch(error => {
             console.log(error);
           })
@@ -175,17 +176,6 @@ export const AddClientesComponent = () => {
                  />
         </div>
         <div className='form-group -mb-2'>
-                <label className='form-label'>recordatorio</label>
-                <input 
-                type='text' 
-                placeholder='Digite Recordatorio' 
-                name='textorecordatorio' 
-                className='form-control' 
-                value={textorecordatorio} 
-                onChange={(e) => settextorecordatorio(e.target.value)}
-                 />
-        </div>
-        <div className='form-group -mb-2'>
                 <label className='form-label'>Frecuencia </label>
                 <select 
                 type='text' 
@@ -195,17 +185,17 @@ export const AddClientesComponent = () => {
                 value={frecuenciatipo} 
                 onChange={(e) => setfrecuenciatipo(e.target.value)}
                 >
+                    <option>Diario</option>
+                    <option>48 horas</option>
+                    <option>72 horas</option>
+                    <option>Semanal</option>
                     <option>Quincenal</option>
                     <option>Mensual</option>
-                    <option>Semanal</option>
-                    <option>Trimestral</option>
                     <option>Bimestral</option>
-                    <option>Semestral</option>
+                    <option>Trimestral</option>
                     <option>Cuatrimestral</option>
-                    <option>72horas</option>
-                    <option>48 horas</option>
+                    <option>Semestral</option>
                     <option>Anual</option>
-                    <option>Diario</option>
               </select>
 
         </div>
@@ -230,18 +220,6 @@ export const AddClientesComponent = () => {
 
         </div>
         <div className='form-group -mb-2'>
-                <label className='form-label'>Frecuencia Envio</label>
-                <input 
-                type='text' 
-                placeholder='Digite Frecuencia Envio' 
-                name='frecuencia' 
-                className='form-control' 
-                value={frecuencia} 
-                onChange={(e) => setfrecuencia(e.target.value)}
-                 />
-        </div>
-
-        <div className='form-group -mb-2'>
                 <label className='form-label'> Fecha Programada </label>
                 <input 
                 type="date"
@@ -252,16 +230,18 @@ export const AddClientesComponent = () => {
                  />
         </div>
         <div className='form-group -mb-2'>
-                <label className='form-label'>Comentarios </label>
-                <input 
+                <label className='form-label'>Recordatorio</label>
+                <textarea 
+                style={{height:'80px'}}
                 type='text' 
-                placeholder='Digite Comentarios' 
-                name='comentarios' 
+                placeholder='Digite Recordatorio' 
+                name='textorecordatorio' 
                 className='form-control' 
-                value={comentarios} 
-                onChange={(e) => setcomentarios(e.target.value)}
+                value={textorecordatorio} 
+                onChange={(e) => settextorecordatorio(e.target.value)}
                  />
         </div>
+
         <br></br>
             {folio == "" || fechaprogramada == "" ?
             <button disabled  className='btn btn-success' onClick={ (e) => saveOrUpdateClientes(e) } >Guardar</ button>
