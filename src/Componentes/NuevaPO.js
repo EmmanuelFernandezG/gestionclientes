@@ -30,6 +30,7 @@ const seg_corr = (x)=>{
     const handleopen = ()=>{
       ClientesService.getnuevapo(sub).then((response) => {
       if (response.data.NoOc !== undefined) {
+            console.log("entra")
           setregistro(response.data)
           setview(true);
       if (response.data.segundavalid !=='primera')

@@ -46,6 +46,7 @@ function LoginForm({Login, error}) {
       height:"80vh",
       opacity:0.9,
     };
+      
   return (
 <Stack style={{marginTop:"6%"}}>
 
@@ -63,9 +64,8 @@ function LoginForm({Login, error}) {
             </Stack>
             <br></br>
             <Stack marginLeft='20%' direction='row'>
-            <Button variant='contained' style={{backgroundColor:'#FF7833'}} type='Submit' value="LOGIN" onClick={e => listarUsuarios()}>LOGIN</Button>
+            <Button variant='contained' style={{backgroundColor:'#FF7833'}} type='Submit' value="LOGIN" onClick={e => listarUsuarios(e)}>LOGIN</Button>
             &nbsp;&nbsp;
-            
             <Button href='usuario' variant='contained' style={{ backgroundColor:'#FF7833'}} type='Submit' value="Nuevo Usuario" onClick={e => NuevoUser()}> <strong>Nuevo User</strong></Button>
             </Stack>
              </div>
