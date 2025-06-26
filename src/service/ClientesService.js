@@ -1,11 +1,10 @@
 import axios from "axios";
-
-// const Clientes_BASE_REST_API =  "http://172.18.2.87:8080/auditoria/inicio/matrizcd/clientes";
-const Clientes_BASE_REST_API =  "http://localhost:8080/auditoria/inicio/matrizcd/matrizcd";
-// const Usuario_BASE_REST_API = "http://172.18.2.87:8080/auditoria/inicio/matrizcd/usuario";
-const Usuario_BASE_REST_API =  "http://localhost:8080/auditoria/inicio/matrizcd/usuarios";
-// const matrizcd_BASE_REST_API =   "http://172.18.2.87:8080/auditoria/inicio/matrizcd/matrizcd";
-const matrizcd_BASE_REST_API =  "http://localhost:8080/auditoria/inicio/matrizcd/matrizcd";
+// const Clientes_BASE_REST_API =  "http://172.18.2.87:8080/Recordatorios/importaciones/controldocumental/matrizcd";
+const Clientes_BASE_REST_API =  "http://localhost:8080/importaciones/controldocumental/matrizcd";
+// const Usuario_BASE_REST_API = "http://172.18.2.87:8080/Recordatorios/importaciones/usuarios/usuarios";
+const Usuario_BASE_REST_API =  "http://localhost:8080/importaciones/usuarios/usuarios";
+// const matrizcd_BASE_REST_API =   "http://172.18.2.87:8080/Recordatorios/importaciones/controldocumental/matrizcd";
+const matrizcd_BASE_REST_API =  "http://localhost:8080/importaciones/controldocumental/matrizcd";
 
 class Clienteservice {
   getAllClientes() {
@@ -41,6 +40,10 @@ class Clienteservice {
   }
   getnuevapo(OrdenC){
     return axios.get(matrizcd_BASE_REST_API + "/nuevapo/" + OrdenC);
+
+  }
+  getnuevapoNA(OrdenC){
+    return axios.get(matrizcd_BASE_REST_API + "/nuevapo/new/" + OrdenC);
 
   }
   getmatrizporId(id){

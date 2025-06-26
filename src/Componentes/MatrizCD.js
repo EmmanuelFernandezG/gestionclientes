@@ -2,6 +2,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogTitle } from "@mui/material/";
+import { BUs } from "./materialReutilizable/RangosReusables"
 import {
   DataGrid,
   GridToolbarContainer,
@@ -12,7 +13,6 @@ import Stack from "@mui/material/Stack";
 import { useEffect } from "react";
 import Clienteservice from "../service/ClientesService";
 import "./button.css";
-import { OneK } from "@mui/icons-material";
 function FullFeaturedCrudGrid() {
   const [dialogo2, setdialogo2] = React.useState(false);
   const [rowModesModel, setRowModesModel] = React.useState({});
@@ -20,18 +20,47 @@ function FullFeaturedCrudGrid() {
   const [valores, setvalores] = React.useState([]);
   const [dialogo, setdialogo] = React.useState(false);
   const [modificar, setmodificar] = React.useState(false);
-  const [masivos,setMasivos] = React.useState({})
   const [sortModel, setSortModel] = React.useState([
     {
-      field: "fechaDeRecepcion",
+      field: "fecha_de_recepcion",
       sort: "desc",
     },
   ]);
   const handleClose = () => {
     setdialogo(false);
     setdialogo2(false);
-
+    
   };
+  const refreshTab = ()=> {
+    setmodificar(false);
+    setfiltrofull()
+    Clienteservice.getAllmatrizcd().then((response)=>{
+      setvalores(response.data)
+    }).catch((error)=>{
+      console.log(error)
+    })
+  }
+
+  function transformarFechas(obj) {
+  const regexFecha = /^\d{2}\/\d{2}\/\d{4}$/;
+
+  const nuevoObjeto = {};
+
+  for (const key in obj) {
+    const valor = obj[key];
+
+    if (typeof valor === "string" && regexFecha.test(valor)) {
+      // Convertir "dd/mm/yyyy" → "yyyy-mm-ddT00:00:00"
+      const [dia, mes, anio] = valor.split("/");
+      nuevoObjeto[key] = `${anio}-${mes}-${dia}T00:00:00`;
+    } else {
+      nuevoObjeto[key] = valor;
+    }
+  }
+
+  return nuevoObjeto;
+}
+
   const listarClientes = (e) => {
     const nwarr = new Array();
     Clienteservice.getAllmatrizcd()
@@ -45,52 +74,76 @@ function FullFeaturedCrudGrid() {
               let i = 0;
               var rango = parseInt(rango);
               for (i = 0; i < response.data.length; i++) {
-                const var1 = response.data[i].folioTt;
+                const var1 = response.data[i].folio_tt;
                 if (var1 === rango) {
                   nwarr.push(response.data[i]);
                   break;
-                }
-              }
+                }}
               setvalores(nwarr);
             });
           } else {
             let i = 0;
             for (i = 0; i < response.data.length; i++) {
-              const var1 = response.data[i].areadestino.toUpperCase();
+              const var1 = response.data[i].area_destino.toUpperCase();
               const var2 = e.toUpperCase();
               if (var1 === var2) {
                 nwarr.push(response.data[i]);
-              }
-            }
+              }}
             setvalores(nwarr);
-          }
-        }
-      })
+          }}})
       .catch((error) => {
         console.log(error);
-      });
-  };
- const cambiomasivos = (event) => {
-  setvalores(prevValores => ({
-    ...prevValores,
-    [event.target.id]: event.target.value
-  }));
-};   
-console.log(valores)
-  const postearStatus = () => {
-  const var2 = filtrofull.split("\n");
-  var2.forEach(function (rango) {
-    Clienteservice.getmatrizporId(rango).then((response) => {
-        masivos.forEach(function (rango){
-        response.data[masivos.id] = masivos.value   
-        funcionModif(response.data.id, response.data)   
-    })
-    }).catch((error)=>{
-      console.log(error)
-    })
-  }
-)}
-  const nuevorango = (filtrofull) => {
+      });};
+
+const filtrosCalculados = (e)=>{
+      const nwarr = new Array();
+  Clienteservice.getAllClientes().then((response)=>{
+        for (let i = 0; i < response.data.length; i++) {
+            const var1 = response.data[i].area_destino;
+            const var2 = response.data[i].fecha_area_destino;
+            const hoy = new Date().toISOString().split('T')[0] + "T00:00:00";
+            const acuseV = response.data[i].acuse;
+              if (var1 === e.target.name && var2 === hoy && (acuseV === "" || acuseV === null)) {
+                nwarr.push(response.data[i]);
+              }
+          setvalores(nwarr);
+        };
+  }).catch((error)=>{
+    console.log(error)
+  })
+}      
+
+  const fechaarea = (e) => { 
+    e.target.id.replace("liberada_por_","fecha_")
+    setvalores(prevValores =>
+    prevValores.map(val => ({
+      ...val,
+      [e.target.id.replace("liberada_por_","fecha_")]: new Date().toISOString().split('T')[0] + "T00:00:00"
+    })));
+}
+const cambiomasivos = (event) => {
+  fechaarea(event);
+  setvalores(prevValores =>
+    prevValores.map(val => ({
+      ...val,
+      [event.target.id]: event.target.value
+    }))
+  );
+};
+
+const postearStatus = () => {
+   valores.forEach(val => {
+      Clienteservice.updatematrizcd(val.id, val)
+        .then((response) => {
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+   });
+           setdialogo2(false);
+          listarClientes()         
+};
+const nuevorango = (filtrofull) => {
     setfiltrofull(filtrofull.target.value);
   };
   const abrirdialogo = (filtrofull) => {
@@ -101,9 +154,11 @@ console.log(valores)
     listarClientes();
     setmodificar(true);
   };
+
   useEffect(() => {
     listarClientes();
   }, []);
+
   if (dialogo) {
     return (
       <Dialog onClose={handleClose} open={dialogo}>
@@ -161,7 +216,7 @@ console.log(valores)
                     </tr>
                   </thead>
                   <tr>
-                    <th scope="row" style={{fontSize:10.5}}>{valores[0].areaDestino}</th>
+                    <th scope="row" style={{fontSize:10.5}}>{valores[0].area_destino}</th>
                     <th scope="row">
                     <select disabled id="liberada_por_matrices" onChange={cambiomasivos} style={{fontSize:12}}>
                         <option > {valores[0].liberada_por_matrices}</option>
@@ -200,7 +255,7 @@ console.log(valores)
               </Stack>
               <stack direction="row">
                 <button
-                 onClick={() => { console.log(valores) }} className="btn btn-success">{" "}Confirmar Masivo{" "}
+                 onClick={() => { postearStatus() }} className="btn btn-success">{" "}Confirmar Masivo{" "}
                   </button>
                 <button
                   style={{ marginLeft: "10px" }} className="btn btn-danger" onClick={handleClose}>Cancelar{" "}
@@ -216,27 +271,13 @@ console.log(valores)
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
-        <Link to={`/auditoria/inicio/matrizcd/matrizcd/nuevapo`} className="btn btn-success">  Nueva PO </Link>
-        <select onChange={(e) => {
-            listarClientes(e.target.value);
-          }} style={{ height: 25 }} name="Area">
-          <option value="all">Filtro Area Destino</option>
-          <option value="compras">COMPRAS</option>
-          <option value="planeacion">PLANEACION</option>
-          <option value="auditoria/sap">AUDITORIA / SAP</option>
-          <option value="envio">ENVIO</option>
-          <option value="cancelada">CANCELADA</option>
-          <option value="cerrada">CERRADA</option>
-        </select>
-        <button
-          className="filtropos"
-          onClick={() => {
-            setdialogo(true);
-          }}
-        >
-          {" "}
-          Filtro por POs{" "}
+        <Link to={`/importaciones/controldocumental/matrizcd/NuevaPO`} className="btn btn-success">  Nueva PO </Link>
+        <button  className="filtropos"  onClick={() => { setdialogo(true);}}>
+          {" "} Filtro por POs{" "}
         </button>
+        <button className="btn btn-warning" name="PLANEACION" onClick={(e)=>{ filtrosCalculados(e) }}> Filtro Planeacion</button>
+        <button className="btn btn-info" name="ENVIO" onClick={(e)=>{ filtrosCalculados(e) }}> Filtro Envio</button>
+        <button className="btn btn-primary" name="Refresh" onClick={()=>{ refreshTab() }}> <b>↻</b> </button>
         {modificar === true ? (
           <button onClick={() => { abrirdialogo(filtrofull);}}style={{ backgroundColor: "red", borderRadius: "10px", color: "white",}}>{" "} Modificar Masivo{" "} </button>
         ) : (
@@ -255,20 +296,21 @@ console.log(valores)
     );
   }
   const funcionModif = (id, updatedRow, originalRow) => {
-    Clienteservice.updatematrizcd(id, updatedRow)
-      .then((response) => {
-        funcionfiltro();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+const rowConFechasTransformadas = transformarFechas(updatedRow);
+   Clienteservice.updatematrizcd(id, rowConFechasTransformadas).then((response) => {
+           // funcionfiltro();
+         })
+         .catch((error) => {
+           console.log(error);
+         });
   };
-  const handleProcessRowUpdateError = (id, error) => {
+
+  const handleProcessRowUpdateError = (error) => {
     console.log(error);
   };
   const handleRowEditStop = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      event.defaultMuiPrevented = true;
+        event.defaultMuiPrevented = true;
     }
   };
   const handleRowModesModelChange = (newRowModesModel) => {
@@ -277,7 +319,7 @@ console.log(valores)
   const opciones = { day: "2-digit", month: "2-digit", year: "numeric" };
   const columns = [
     {
-      field: "fechaDeRecepcion",
+      field: "fecha_de_recepcion",
       headerName: "FECHA DE RECEPCION",
       width: 110,
       editable: false,
@@ -288,7 +330,7 @@ console.log(valores)
       },
     },
     {
-      field: "fechaInicio",
+      field: "fecha_inicio",
       headerName: "FECHA",
       width: 100,
       editable: false,
@@ -299,28 +341,30 @@ console.log(valores)
       },
     },
     {
-      field: "folioTt",
+      field: "folio_tt",
       headerName: "FOLIO TT",
       width: 90,
       editable: false,
       headerClassName: "gris",
     },
     {
-      field: "noOc",
+      field: "no_oc",
       headerName: "NO. O.C.",
       width: 90,
       editable: false,
       headerClassName: "gris",
     },
     {
-      field: "unidadDeNegocio",
+      field: "unidad_de_negocio",
       headerName: "UNIDAD DE NEGOCIO",
       width: 140,
-      editable: false,
+      editable: true,
+      type: "singleSelect",
       headerClassName: "gris",
+      valueOptions: BUs
     },
     {
-      field: "noDeProveedor",
+      field: "no_de_proveedor",
       headerName: "NO. DE PROVEEDOR",
       width: 110,
       editable: false,
@@ -334,7 +378,7 @@ console.log(valores)
       headerClassName: "gris",
     },
     {
-      field: "gerenteDeCompras",
+      field: "gerente_de_compras",
       headerName: "GERENTE DE COMPRAS",
       width: 180,
       editable: false,
@@ -354,7 +398,7 @@ console.log(valores)
       editable: true,
       headerClassName: "gris",
       type: "singleSelect",
-      valueOptions: ["Si", "No"],
+      valueOptions: ["Si", "No","PF"],
     },
     {
       field: "precio",
@@ -362,6 +406,8 @@ console.log(valores)
       width: 80,
       editable: true,
       headerClassName: "gris",
+      type: "singleSelect",
+      valueOptions: ["A LA ALZA", "A LA BAJA", "OK","ALZA Y BAJA", "MONEDA", "NOTA $"],
     },
     {
       field: "matriz",
@@ -369,34 +415,44 @@ console.log(valores)
       width: 140,
       editable: true,
       headerClassName: "gris",
+      type: "singleSelect",
+      valueOptions: ["REFERENCIA", "FIRMADA", "MIXTA","N/A"],
     },
     {
-      field: "datosFiscales",
+      field: "datos_fiscales",
       headerName: "DATOS FISCALES",
       width: 80,
       editable: true,
       headerClassName: "gris",
+      type: "singleSelect",
+      valueOptions: ["REFERENCIA", "FIRMADA", "MIXTA","N/A"],
     },
     {
-      field: "termDePago",
+      field: "term_de_pago",
       headerName: "TERM. DE PAGO",
       width: 80,
       editable: true,
       headerClassName: "gris",
+      type: "singleSelect",
+      valueOptions: ["REFERENCIA", "FIRMADA", "MIXTA","N/A"],
     },
     {
-      field: "dirDeProv",
+      field: "dir_de_prov",
       headerName: "DIR. DE PROV.",
       width: 80,
       editable: true,
       headerClassName: "gris",
+      type: "singleSelect",
+      valueOptions: ["REFERENCIA", "FIRMADA", "MIXTA","N/A"],
     },
     {
-      field: "taxId",
+      field: "tax_id",
       headerName: "TAX ID",
       width: 80,
       editable: true,
       headerClassName: "gris",
+      type: "singleSelect",
+      valueOptions: ["REFERENCIA", "FIRMADA", "MIXTA","N/A"],
     },
     {
       field: "incoterm",
@@ -404,6 +460,8 @@ console.log(valores)
       width: 80,
       editable: true,
       headerClassName: "gris",
+      type: "singleSelect",
+      valueOptions: ["REFERENCIA", "FIRMADA", "MIXTA","N/A"],
     },
     {
       field: "qty",
@@ -411,6 +469,8 @@ console.log(valores)
       width: 80,
       editable: true,
       headerClassName: "gris",
+      type: "singleSelect",
+      valueOptions: ["REFERENCIA", "FIRMADA", "MIXTA","N/A"],
     },
     {
       field: "etd",
@@ -422,7 +482,7 @@ console.log(valores)
       valueOptions: ["OK", "MAL"],
     },
     {
-      field: "etdPo",
+      field: "etd_po",
       headerName: "ETD PO",
       width: 100,
       editable: false,
@@ -433,7 +493,7 @@ console.log(valores)
       },
     },
     {
-      field: "etdPi",
+      field: "etd_pi",
       headerName: "ETD PI",
       width: 100,
       editable: true,
@@ -448,9 +508,9 @@ console.log(valores)
           return date;
         }
       },
-    },
+      },
     {
-      field: "montoPi",
+      field: "montopi",
       headerName: "MONTO PI",
       width: 100,
       editable: true,
@@ -467,28 +527,28 @@ console.log(valores)
       headerClassName: "testback",
     },
     {
-      field: "addElimItem",
+      field: "add_elim_item",
       headerName: "ADD/ELIM ITEM",
       width: 100,
       editable: true,
       headerClassName: "gris",
     },
     {
-      field: "pesoVol",
+      field: "peso_vol",
       headerName: "PESO/VOL",
       width: 100,
       editable: true,
       headerClassName: "gris",
     },
     {
-      field: "ptoDirecto",
+      field: "pto_directo",
       headerName: "PTO. DIRECTO",
       width: 100,
       editable: true,
       headerClassName: "gris",
     },
     {
-      field: "validacionPodVsPi",
+      field: "validacion_pod_vs_pi",
       headerName: "VALIDACIÓN POD VS PI",
       width: 100,
       editable: true,
@@ -502,21 +562,21 @@ console.log(valores)
       headerClassName: "gris",
     },
     {
-      field: "liberacionDeMatrConSello",
+      field: "liberacion_de_matr_con_sello",
       headerName: "LIBERACION DE MATRICES CON SELLO",
       width: 160,
       editable: true,
       headerClassName: "gris",
     },
     {
-      field: "validacionesExtraordinarias",
+      field: "validaciones_extraordinarias",
       headerName: "VALIDACIONES EXTRAORDINARIAS",
       width: 160,
       editable: true,
       headerClassName: "gris",
     },
     {
-      field: "condicionDeMatrices",
+      field: "condicion_de_matrices",
       headerName: "CONDICIÓN DE MATRICES",
       width: 110,
       editable: true,
@@ -529,7 +589,7 @@ console.log(valores)
       editable: true,
     },
     {
-      field: "areaDestino",
+      field: "area_destino",
       headerName: "AREA DESTINO",
       width: 110,
       editable: true,
@@ -574,9 +634,17 @@ console.log(valores)
           if (
             !["R", "PPU", "MS", "X", "N/A"].includes(row.liberada_por_matrices)
           ) {
+          if (["Mecánica 1","Der. Petróleo 1","Máquinas 2","Htas. Manuales 1","Volteck 1","Volteck 2","Volteck 3"].includes(row.unidad_de_negocio)){
+            return "COMPRAS/PLANEACION";
+          }  else{
             return "COMPRAS";
+          }
           } else if (row.liberada_por_bu !== "ACEPTADA") {
+          if (["Mecánica 1","Der. Petróleo 1","Máquinas 2","Htas. Manuales 1","Volteck 1","Volteck 2","Volteck 3"].includes(row.unidad_de_negocio)){
+            return "COMPRAS/PLANEACION";
+          }  else{
             return "COMPRAS";
+          }
           } else {
             return "PLANEACION";
           }
@@ -584,7 +652,7 @@ console.log(valores)
       },
     },
     {
-      field: "fechaAreaDestino",
+      field: "fecha_area_destino",
       headerName: "FECHA",
       width: 100,
       type: "date",
@@ -608,7 +676,7 @@ console.log(valores)
       headerClassName: "area",
     },
     {
-      field: "statusProblema",
+      field: "status__problema",
       headerName: "STATUS/ PROBLEMA",
       width: 100,
       editable: true,
@@ -624,7 +692,7 @@ console.log(valores)
       valueOptions: ["" , "ACEPTADA", "RECHAZADA"],
     },
     {
-      field: "fechaMatrices",
+      field: "fecha_matrices",
       headerName: "FECHA",
       width: 100,
       editable: true,
@@ -640,7 +708,7 @@ console.log(valores)
       },
     },
     {
-      field: "motivoMatrices",
+      field: "motivo_matrices",
       headerName: "MOTIVO",
       width: 180,
       editable: true,
@@ -656,7 +724,7 @@ console.log(valores)
       valueOptions: ["" , "ACEPTADA", "RECHAZADA"],
     },
     {
-      field: "fechaBu",
+      field: "fecha_bu",
       headerName: "FECHA",
       width: 100,
       type: "date",
@@ -673,7 +741,7 @@ console.log(valores)
       },
     },
     {
-      field: "motivoBu",
+      field: "motivo_bu",
       headerName: "MOTIVO",
       width: 180,
       editable: true,
@@ -689,7 +757,7 @@ console.log(valores)
       valueOptions: ["" , "ACEPTADA", "RECHAZADA"],
     },
     {
-      field: "fechaPlaneacion",
+      field: "fecha_planeacion",
       headerName: "FECHA",
       width: 100,
       type: "date",
@@ -706,7 +774,7 @@ console.log(valores)
       },
     },
     {
-      field: "motivoPlaneacion",
+      field: "motivo_planeacion",
       headerName: "MOTIVO",
       width: 180,
       editable: true,
@@ -722,7 +790,7 @@ console.log(valores)
       valueOptions: ["" , "ACEPTADA", "RECHAZADA"],
     },
     {
-      field: "fechaAuditoria",
+      field: "fecha_auditoria",
       headerName: "FECHA",
       width: 100,
       type: "date",
@@ -739,7 +807,7 @@ console.log(valores)
       },
     },
     {
-      field: "motivoAuditoria",
+      field: "motivo_auditoria",
       headerName: "MOTIVO",
       width: 180,
       editable: true,
@@ -755,7 +823,7 @@ console.log(valores)
       valueOptions: ["" , "ACEPTADA", "RECHAZADA"],
     },
     {
-      field: "fechaSap",
+      field: "fecha_sap",
       headerName: "FECHA",
       width: 100,
       editable: true,
@@ -772,14 +840,14 @@ console.log(valores)
       },
     },
     {
-      field: "motivoSap",
+      field: "motivo_sap",
       headerName: "MOTIVO",
       width: 180,
       editable: true,
       headerClassName: "sap",
     },
     {
-      field: "envioAProveedor",
+      field: "envio_a_proveedor",
       headerName: "ENVIO A PROVEEDOR",
       width: 100,
       editable: true,
@@ -793,13 +861,13 @@ console.log(valores)
       headerClassName: "trial",
     },
     {
-      field: "historialDeModificacion",
+      field: "historial_de_modificacion",
       headerName: "HISTORIAL DE MODIFICACION",
       width: 100,
       editable: false,
     },
     {
-      field: "fechaRevision",
+      field: "fecha_revision",
       headerName: "Fecha Revision",
       width: 100,
       editable: false,
@@ -813,6 +881,31 @@ console.log(valores)
           return date;
         }
       },
+    },
+    {
+      field: "fecha_entrega_compras",
+      headerName: "FECHA DE ENTREGA COMPRAS",
+      width: 100,
+      editable: true,
+      headerClassName: "gris",
+      type: "singleSelect",
+      valueOptions: [new Date(Date()+1).toLocaleDateString("es-MX", opciones)],
+      valueFormatter: (params) => {
+  return params === null
+    ? ""
+    : params.includes("T")
+      ? (() => {
+          const [yyyy, mm, dd] = params.split("T")[0].split("-");
+          const fecha = new Date(Number(yyyy), Number(mm) - 1, Number(dd));
+          fecha.setDate(fecha.getDate() );
+          return fecha.toLocaleDateString("es-MX", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+          });
+        })()
+      : params;
+},
     },
   ];
   return (
@@ -851,9 +944,12 @@ console.log(valores)
             [updatedRow.id]: { mode: "view" },
           };
           setRowModesModel(newRowModesModel);
-
           return updatedRow; 
         }}
+        filterMode="client"
+        disableColumnFilter={false}
+        disableColumnSelector={false}
+        disableDensitySelector={false}
         onProcessRowUpdateError={handleProcessRowUpdateError}
         sortModel={sortModel}
         rows={valores}

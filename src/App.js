@@ -76,8 +76,8 @@ if(almacenlocalusuario === null){
       <HeaderComponent />
       <div className='container'>
       <Routes>
-          <Route path='auditoria/inicio/matrizcd/matrizcd/' element={<MatrizCD/>}></Route>    
-          <Route path='auditoria/inicio/matrizcd/matrizcd/NuevaPO' element={<NuevaPO/>}></Route>    
+          <Route path='importaciones/controldocumental/matrizcd' element={<MatrizCD/>}></Route>    
+          <Route path='importaciones/controldocumental/matrizcd/NuevaPO' element={<NuevaPO/>}></Route>    
       </Routes>
       </div>
       </BrowserRouter>

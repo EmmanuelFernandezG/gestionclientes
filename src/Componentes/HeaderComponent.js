@@ -34,7 +34,7 @@ if(localStorage.getItem('perfil') === 'ControlDocumental' ){
             <nav  style={{border: "1px solid black"}}  className='navbar navbar-expand-mb navbar-light- bg-light'>
                 <div>
                     <Link  to="record" style={{color:"#FF6720" }} className='navbar-brand'>&nbsp; <strong>Inicio</strong> </Link>    
-                    <Link  to="auditoria/inicio/matrizcd/matrizcd" style={{color:"#FF6720" }} className='navbar-brand'>&nbsp; <strong>Matriz CD</strong> </Link>    
+                    <Link  to="importaciones/controldocumental/matrizcd" style={{color:"#FF6720" }} className='navbar-brand'>&nbsp; <strong>Matriz CD</strong> </Link>    
                 </div>
                 <Link to='record'><button className='btn btn-danger'  onClick={limpiarstorage}> Log Out </button></Link>
 
